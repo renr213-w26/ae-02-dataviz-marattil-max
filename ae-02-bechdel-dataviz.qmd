@@ -1,5 +1,8 @@
 ---
 title: "AE 02: Bechdel + data visualization"
+editor: 
+  markdown: 
+    wrap: sentence
 ---
 
 In this mini analysis we work with the data used in the FiveThirtyEight story titled ["The Dollar-And-Cents Case Against Hollywood's Exclusion of Women"](https://fivethirtyeight.com/features/the-dollar-and-cents-case-against-hollywoods-exclusion-of-women/).
@@ -39,20 +42,21 @@ We can use the `glimpse` function to get an overview (or "glimpse") of the data.
 ```{r}
 #| label: glimpse
 
-# add code here
+bechdel |>
+  glimpse()
 ```
 
 -   What does each observation (row) in the data set represent?
 
-Each observation represents a **\_\_\_**.
+Each observation represents a **movie**.
 
 -   How many observations (rows) are in the data set?
 
-There are `r nrow(bechdel)` movies in the dataset.
+There are `{r} nrow(bechdel)` movies in the dataset.
 
 -   How many variables (columns) are in the data set?
 
-There are `___` columns in the dataset.
+There are `{r} ncol(bechdel)` columns in the dataset.
 
 ### Variables of interest
 
@@ -111,6 +115,7 @@ Note that the result is exactly the same.
 
 ```{r}
 #| label: plot-point
+#| warning: false
 
 ggplot(bechdel, aes(x = budget_2013, y = gross_2013)) +
   geom_point()
@@ -131,9 +136,10 @@ See <http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf> for many color optio
 
 ```{r}
 #| label: plot-point-color
+#| warning: false
 
 ggplot(bechdel, aes(x = budget_2013, y = gross_2013)) +
-  geom_point(color = "deepskyblue3") 
+  geom_point(color = "purple") 
 ```
 
 ### Step 2 - Your turn
@@ -142,13 +148,14 @@ Add labels for the title and x and y axes.
 
 ```{r}
 #| label: plot-labels
+#| warning: false
 
 ggplot(bechdel, aes(x = budget_2013, y = gross_2013))+
   geom_point(color = "deepskyblue3") + 
   labs(
-    x = "___", 
-    y = "___", 
-    title = "___"
+    x = "Budget ($)", 
+    y = "Gross ($)", 
+    title = "Relationship between Movie Budget and Total Gross for movies released in 2013, with amounts adjusted to inflation"
   )
 ```
 
@@ -168,12 +175,12 @@ Modify the plot below, so the `color` of the points is based on the variable `bi
 ```{r}
 #| label: plot-aes-color
 
-ggplot(bechdel, aes(x = budget_2013, y = gross_2013)) +
+ggplot(bechdel, aes(x = budget_2013, y = gross_2013, colour = binary)) +
   geom_point() + 
   labs(
     x = "Budget (in 2013 $)", 
     y = "Gross revenue (in 2013 $)", 
-    title = "Gross revenue vs. budget, by ___"
+    title = "Gross revenue vs. budget, by Bechdel Test result"
   )
 ```
 
@@ -183,8 +190,14 @@ Expand on your plot from the previous step to make the size of your points based
 
 ```{r}
 #| label: plot-aes-size
-
-# add code here
+#| warning: false
+ggplot(bechdel, aes(x = budget_2013, y = gross_2013, colour = binary, size = roi)) +
+  geom_point() + 
+  labs(
+    x = "Budget (in 2013 $)", 
+    y = "Gross revenue (in 2013 $)", 
+    title = "Gross revenue vs. budget, by  Bechdel Test result and Return on Investments"
+  )
 ```
 
 ### Step 5 - Your turn
@@ -193,8 +206,14 @@ Expand on your plot from the previous step to make the transparency (`alpha`) of
 
 ```{r}
 #| label: plot-aes-alpha
-
-# add code here
+#| warning: false
+ggplot(bechdel, aes(x = budget_2013, y = gross_2013, colour = binary, size = roi, alpha = 0.5)) +
+  geom_point() + 
+  labs(
+    x = "Budget (in 2013 $)", 
+    y = "Gross revenue (in 2013 $)", 
+    title = "Gross revenue vs. budget, by Bechdel Test result and Return on Investments"
+  )
 ```
 
 ### Step 6 - Your turn
@@ -203,8 +222,15 @@ Expand on your plot from the previous step by using `facet_wrap` to display the 
 
 ```{r}
 #| label: plot-facet-wrap
-
-# add code here
+#| warning: false
+ggplot(bechdel, aes(x = budget_2013, y = gross_2013, colour = binary, size = roi, alpha = 0.5 )) +
+  geom_point() + 
+  facet_wrap(~ clean_test)+
+  labs(
+    x = "Budget (in 2013 $)", 
+    y = "Gross revenue (in 2013 $)", 
+    title = "Gross revenue vs. budget, by Bechdel Test result "
+  )
 ```
 
 ### Step 7 - Demo
@@ -217,8 +243,17 @@ Make use of the [**scales**](https://scales.r-lib.org/) package, specifically th
 
 ```{r}
 #| label: plot-scales
+#| warning: false
 
-# add code here
+ggplot(bechdel, aes(x = budget_2013, y = gross_2013, colour = binary, size = roi, alpha = 0.5 )) +
+  geom_point() + 
+  facet_wrap(~ clean_test)+
+  labs(
+    x = "Budget (in million 2013 $)", 
+    y = "Gross revenue (in million 2013 $)", 
+    title = "Gross revenue vs. budget, by Bechdel Test result "
+  )+ scale_x_continuous(label = label_number(scale = 1/1000000))+
+  scale_y_continuous(label = label_number(scale = 1/1000000))
 ```
 
 ### Step 8 - Your turn
@@ -228,11 +263,22 @@ Comment on whether this was a useful update.
 
 ```{r}
 #| label: plot-facet-grid
+#| warning: false
 
-# add code here
+ggplot(bechdel, aes(x = budget_2013, y = gross_2013, colour = binary, size = roi, alpha = 0.5 )) +
+  geom_point() + 
+  facet_grid(binary ~ clean_test)+
+  labs(
+    x = "Budget (in million 2013 $)", 
+    y = "Gross revenue (in million 2013 $)", 
+    title = "Gross revenue vs. budget, by Bechdel Test result "
+  )+ scale_x_continuous(label = label_number(scale = 1/1000000))+
+  scale_y_continuous(label = label_number(scale = 1/1000000))
 ```
 
-Add comment here...
+Due to the categories under `clean_data`, the all data that would usually fall under the pass binary is already seperated in the `ok` variable.
+Therefore, by filtering by the `binary` variable, the display becomes crowded.
+I can see how it may be helpful in the event that binary options are not seperate visually by colour.
 
 ### Step 9 - Demo
 
@@ -240,8 +286,17 @@ What other improvements could we make to this plot?
 
 ```{r}
 #| label: plot-improve
+#| warning: false
 
-# add code here
+ggplot(bechdel, aes(x = budget_2013, y = gross_2013, colour = binary, size = roi, alpha = 0.5 )) +
+  geom_point() + 
+  facet_grid(~ clean_test)+
+  labs(
+    x = "Budget (in billion 2013 $)", 
+    y = "Gross revenue (in billion 2013 $)", 
+    title = "Gross revenue vs. budget, by Bechdel Test result "
+  )+ scale_x_continuous(label = label_number(scale = 1/1000000000))+
+  scale_y_continuous(label = label_number(scale = 1/1000000000))
 ```
 
 ### Render, commit, and push
