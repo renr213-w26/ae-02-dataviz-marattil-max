@@ -276,7 +276,7 @@ ggplot(bechdel, aes(x = budget_2013, y = gross_2013, colour = binary, size = roi
   scale_y_continuous(label = label_number(scale = 1/1000000))
 ```
 
-Due to the categories under `clean_data`, the all data that would usually fall under the pass binary is already seperated in the `ok` variable.
+COMMENTS: Due to the categories under `clean_data`, the all data that would usually fall under the pass binary is already seperated in the `ok` variable.
 Therefore, by filtering by the `binary` variable, the display becomes crowded.
 I can see how it may be helpful in the event that binary options are not seperate visually by colour.
 
@@ -321,8 +321,18 @@ Create side-by-side box plots of `roi` by `clean_test` where the boxes are color
 
 ```{r}
 #| label: roi-zoom
+#| warning: false
 
-# add code here
+ggplot(bechdel,
+       aes(x = clean_test, y = roi, colour = binary)
+       )+
+  geom_boxplot()+
+  labs(
+    title = "Return on Investments vs. Bechdel Test Results",
+    x = "Bechdel Test Results",
+    y = "Return on Investments",
+    colour = "Bechdel\nresult"
+  )
 ```
 
 What are those movies with *very* high returns on investment?
@@ -339,8 +349,19 @@ Expand on your plot from the previous step to zoom in on movies with `roi < ___`
 
 ```{r}
 #| label: roi-test-zoom
+#| warning: false
 
-# add code here
+ggplot(bechdel,
+       aes(x = clean_test, y = roi, colour = binary)
+       )+
+  geom_boxplot()+
+  labs(
+    title = "Return on Investments vs. Bechdel Test Results",
+    x = "Bechdel Test Results",
+    y = "Return on Investments",
+    colour = "Bechdel\nresult"
+  )+
+  coord_cartesian(ylim = c(0,18))
 ```
 
 What does this plot say about return-on-investment on movies that pass the Bechdel test?
